@@ -1,103 +1,98 @@
 ---
 import { siteConfig } from "../config";
-const hasProjects = siteConfig.projects && siteConfig.projects.length > 0;
+
+const projects = siteConfig.projects ?? [];
 ---
 
 {
-  hasProjects && (
-    <section id="projects" class="p-8 sm:p-12 md:p-16 lg:p-24">
-      <div>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-          <div class="lg:col-span-4">
-            <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900">
-              Projects
-            </h2>
-            <div
-              class="w-[75px] h-[5px] mt-2 rounded-full"
-              style={`background-color: ${siteConfig.accentColor}`}
-            />
-          </div>
-
-          <div class="lg:col-span-8">
-            <div class="space-y-8">
-              {siteConfig.projects.map((project, index) => {
-                const Component = project.link ? "a" : "div";
-                const linkProps = project.link
-                  ? {
-                      href: project.link,
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    }
-                  : {};
-
-                return (
-                  <div class="group relative">
-                    <Component
-                      {...linkProps}
-                      class={`block relative p-4 sm:p-6 md:p-8 bg-gray-50 rounded-xl sm:rounded-2xl border border-gray-200 transition-all duration-300 ${
-                        project.link
-                          ? "hover:bg-white hover:shadow-xl hover:border-gray-300 hover:-translate-y-1"
-                          : ""
-                      }`}
-                    >
-                      {project.link && (
-                        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 flex items-center justify-center bg-gray-900 rounded-full text-white transition-all duration-300 group-hover:bg-gray-700">
-                          <svg
-                            class="w-4 h-4 sm:w-4.5 sm:h-4.5 md:w-5 md:h-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M7 17L17 7M17 7H7M17 7V17"
-                            />
-                          </svg>
-                        </div>
-                      )}
-
-                      <div class="space-y-4">
-                        <div>
-                          <span
-                            class="text-sm font-mono"
-                            style={{ color: siteConfig.accentColor }}
-                          >
-                            0{index + 1}
-                          </span>
-                          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">
-                            {project.name}
-                          </h3>
-                        </div>
-
-                        <p
-                          class={`text-base sm:text-lg text-gray-600 leading-relaxed ${project.link ? "pr-12 sm:pr-14 md:pr-16" : ""}`}
-                        >
-                          {project.description}
-                        </p>
-
-                        {project.skills && project.skills.length > 0 && (
-                          <div class="flex flex-wrap gap-1.5 sm:gap-2 pt-2">
-                            {project.skills.map((skill) => (
-                              <span
-                                class={`px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-900 text-white rounded-md sm:rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
-                                  project.link ? "group-hover:bg-gray-800" : ""
-                                }`}
-                              >
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </Component>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+  projects.length > 0 && (
+    <section id="projects" class="pt-28 sm:pt-36">
+      <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p class="eyebrow">01 / Selected Work</p>
+          <h2 class="section-title mt-5">代表项目</h2>
         </div>
+        <p class="max-w-sm text-sm leading-7 text-muted sm:text-right">
+          从检索链路到 Agent 编排，再到部署交付，把研究能力变成真实产品。
+        </p>
+      </div>
+
+      <div class="mt-9 grid gap-5 lg:grid-cols-2">
+        {
+          projects.map((project, index) => (
+            <article class="glass glass-hover overflow-hidden p-4 sm:p-5">
+              <div class="flex items-center justify-between gap-4">
+                <span class="font-mono text-xs text-violet-300/75">0{index + 1}</span>
+                <span class="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
+                  {index === 0 ? "Live Project" : "Research Project"}
+                </span>
+              </div>
+
+              <div class="project-visual mt-4">
+                {
+                  index === 0 ? (
+                    <div class="mini-window">
+                      <div class="mini-window__bar flex items-center gap-1.5 px-3">
+                        <span class="h-1.5 w-1.5 rounded-full bg-red-400"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                        <span class="ml-auto font-mono text-[8px] text-white/30">knowledge / graph</span>
+                      </div>
+                      <div class="flex h-[calc(100%-25px)]">
+                        <div class="mini-window__side space-y-2 p-3">
+                          <span class="block h-1.5 w-12 rounded-full bg-violet-300/50"></span>
+                          <span class="block h-1.5 w-9 rounded-full bg-white/15"></span>
+                          <span class="block h-1.5 w-11 rounded-full bg-white/15"></span>
+                          <span class="block h-1.5 w-7 rounded-full bg-white/15"></span>
+                        </div>
+                        <div class="relative flex flex-1 items-center justify-center">
+                          <div class="mini-orb"></div>
+                          <span class="absolute left-[20%] top-[28%] h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_#67e8f9]"></span>
+                          <span class="absolute right-[18%] bottom-[25%] h-1.5 w-1.5 rounded-full bg-pink-300 shadow-[0_0_12px_#f0abfc]"></span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <svg class="absolute inset-0 h-full w-full" viewBox="0 0 620 260" fill="none" aria-hidden="true">
+                      <path class="network-line" d="M92 133 210 73 312 142 433 71 530 128" />
+                      <path class="network-line" d="M92 133 171 202 312 142 395 209 530 128" />
+                      <path class="network-line" d="M210 73 395 209" opacity=".45" />
+                      <circle class="network-node" cx="92" cy="133" r="8" />
+                      <circle class="network-node" cx="210" cy="73" r="6" />
+                      <circle class="network-node" cx="312" cy="142" r="13" />
+                      <circle class="network-node" cx="433" cy="71" r="7" />
+                      <circle class="network-node" cx="530" cy="128" r="9" />
+                      <circle class="network-node" cx="171" cy="202" r="5" fill="#67e8f9" />
+                      <circle class="network-node" cx="395" cy="209" r="6" fill="#67e8f9" />
+                      <text x="286" y="147" fill="white" opacity=".72" font-size="11" font-family="IBM Plex Mono">CHAINMARK</text>
+                    </svg>
+                  )
+                }
+              </div>
+
+              <div class="mt-6 flex items-start justify-between gap-5">
+                <div class="min-w-0">
+                  <h3 class="font-display text-xl font-semibold tracking-tight text-white sm:text-2xl">{project.name}</h3>
+                  <p class="mt-3 text-sm leading-7 text-muted">{project.description}</p>
+                </div>
+              </div>
+
+              <div class="mt-5 flex flex-wrap gap-2">
+                {project.skills.slice(0, 7).map((skill) => <span class="chip">{skill}</span>)}
+              </div>
+
+              {
+                project.link ? (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-2 text-xs font-medium text-cyan-300 transition-colors hover:text-white">
+                    查看项目 <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  <span class="mt-5 inline-flex items-center gap-2 font-mono text-[10px] text-white/35">实验室项目 <span aria-hidden="true">·</span> 可提供技术细节</span>
+                )
+              }
+            </article>
+          ))
+        }
       </div>
     </section>
   )

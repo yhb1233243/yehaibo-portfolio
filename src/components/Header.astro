@@ -1,78 +1,286 @@
 ---
 import { siteConfig } from "../config";
 
-const hasProjects = siteConfig.projects && siteConfig.projects.length > 0;
-const hasExperience = siteConfig.experience && siteConfig.experience.length > 0;
-const hasEducation = siteConfig.education && siteConfig.education.length > 0;
+const onEssayPage = Astro.url.pathname.startsWith("/essays");
+const homeHref = (section: string) => `${onEssayPage ? "/" : ""}#${section}`;
+const links = [
+  { href: homeHref("home"), section: "home", label: "首页", code: "00" },
+  siteConfig.projects?.length ? { href: homeHref("projects"), section: "projects", label: "项目", code: "01" } : null,
+  siteConfig.experience?.length ? { href: homeHref("experience"), section: "experience", label: "经历", code: "02" } : null,
+  { href: onEssayPage ? "/essays/" : "#essays", section: "essays", label: "随笔", code: "03" },
+  { href: homeHref("achievements"), section: "achievements", label: "成果", code: "04" },
+  { href: homeHref("about"), section: "about", label: "关于", code: "05" },
+].filter((link): link is { href: string; section: string; label: string; code: string } => link !== null);
+
+const email = siteConfig.social.email;
 ---
 
-<header
-  id="header"
-  class="fixed top-0 left-0 right-0 z-50 hidden md:block transition-all duration-300"
->
-  <nav class="max-w-7xl mx-auto px-8 py-4">
-    <ul class="flex items-center gap-8 justify-center">
-      <li>
-        <a
-          href="#about"
-          class="text-gray-700 hover:text-black transition-colors font-medium"
-        >
-          About
-        </a>
-      </li>
+<div class="scroll-progress" aria-hidden="true">
+  <div id="scroll-progress" style="transform: scaleX(0)" class="h-full origin-left bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-300"></div>
+</div>
+
+<header id="site-header" class="site-header fixed inset-x-0 top-0 z-50">
+  <div class="mx-auto grid h-[76px] w-full max-w-[1240px] grid-cols-[1fr_auto] items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1fr_auto_1fr]">
+    <a href={homeHref("home")} class="group flex w-fit items-center gap-3" aria-label={`${siteConfig.name} 首页`}>
+      <span class="grid h-9 w-9 place-items-center rounded-xl border border-white/20 bg-gradient-to-br from-violet-500/80 to-cyan-400/70 font-display text-sm font-bold text-white shadow-[0_0_25px_-8px_#8b5cf6] transition-transform group-hover:rotate-6">
+        叶
+      </span>
+      <span>
+        <span class="block font-display text-sm font-semibold tracking-tight text-white">{siteConfig.name}</span>
+        <span class="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">AI engineer</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-8 lg:flex" aria-label="主导航">
       {
-        hasProjects && (
-          <li>
-            <a
-              href="#projects"
-              class="text-gray-700 hover:text-black transition-colors font-medium"
-            >
-              Projects
-            </a>
-          </li>
+        links.map((link) => (
+          <a href={link.href} data-nav data-section={link.section} class="nav-link">
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center justify-end gap-2.5">
+      {
+        email && (
+          <a href={`mailto:${email}`} class="hidden rounded-full border border-violet-300/35 bg-white/[0.045] px-4 py-2 text-xs font-medium text-white transition-all hover:border-cyan-300/60 hover:bg-white/[0.09] sm:inline-flex sm:items-center sm:gap-2">
+            Let's Connect
+            <span aria-hidden="true" class="text-cyan-300">↗</span>
+          </a>
         )
       }
-      {
-        hasExperience && (
-          <li>
-            <a
-              href="#experience"
-              class="text-gray-700 hover:text-black transition-colors font-medium"
-            >
-              Experience
-            </a>
-          </li>
-        )
-      }
-      {
-        hasEducation && (
-          <li>
-            <a
-              href="#education"
-              class="text-gray-700 hover:text-black transition-colors font-medium"
-            >
-              Education
-            </a>
-          </li>
-        )
-      }
-    </ul>
-  </nav>
+      <button
+        id="menu-open"
+        type="button"
+        aria-label="打开导航"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        class="grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-white/[0.045] text-white/80 transition-colors hover:border-cyan-300/50 hover:text-white lg:hidden"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h10" />
+        </svg>
+      </button>
+    </div>
+  </div>
 </header>
 
+<div id="mobile-menu" class="mobile-drawer fixed inset-0 z-[60] hidden lg:hidden" aria-hidden="true">
+  <button id="menu-overlay" type="button" aria-label="关闭导航" class="absolute inset-0 bg-[#02030a]/75 opacity-0 backdrop-blur-md transition-opacity duration-300"></button>
+  <div id="menu-panel" role="dialog" aria-modal="true" aria-label="移动端导航" tabindex="-1" class="absolute right-0 top-0 flex h-full w-[min(88%,390px)] translate-x-full flex-col border-l border-white/10 bg-[#080a15]/95 p-6 shadow-2xl shadow-black/60 backdrop-blur-2xl transition-transform duration-300">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="grid h-9 w-9 place-items-center rounded-xl border border-white/20 bg-gradient-to-br from-violet-500/80 to-cyan-400/70 font-display text-sm font-bold text-white">叶</span>
+        <div>
+          <p class="font-display text-sm font-semibold text-white">{siteConfig.name}</p>
+          <p class="mt-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">AI engineer</p>
+        </div>
+      </div>
+      <button id="menu-close" type="button" aria-label="关闭导航" class="grid h-10 w-10 place-items-center rounded-xl border border-white/15 text-white/70 transition-colors hover:border-cyan-300/50 hover:text-white">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12" /><path d="M18 6l-12 12" /></svg>
+      </button>
+    </div>
+
+    <nav class="mt-14" aria-label="移动端导航">
+      <p class="eyebrow">Navigate</p>
+      <ul class="mt-6 space-y-2">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} data-nav data-section={link.section} data-menu-close class="flex items-center gap-4 rounded-xl px-3 py-3 text-2xl font-medium text-white/70 transition-colors hover:bg-white/[0.05] hover:text-white">
+                <span class="font-mono text-[10px] text-violet-300/70">{link.code}</span>{link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-auto border-t border-white/10 pt-5">
+      <p class="eyebrow">Contact</p>
+      {
+        email && (
+          <a href={`mailto:${email}`} class="mt-4 flex items-center gap-3 font-mono text-xs text-white/65 transition-colors hover:text-cyan-300">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" /><path d="m3 7 9 6 9-6" /></svg>
+            <span class="truncate">{email}</span>
+          </a>
+        )
+      }
+      <p class="mt-5 font-mono text-[10px] text-white/30">2027 届 · 可实习</p>
+    </div>
+  </div>
+</div>
+
 <script>
-  window.addEventListener("scroll", () => {
-    const header = document.getElementById("header");
-    if (window.scrollY > 100) {
-      header?.classList.add("bg-white/80", "backdrop-blur-sm");
-    } else {
-      header?.classList.remove("bg-white/80", "backdrop-blur-sm");
+  const header = document.getElementById("site-header");
+  const menu = document.getElementById("mobile-menu");
+  const panel = document.getElementById("menu-panel");
+  const overlay = document.getElementById("menu-overlay");
+  const openButton = document.getElementById("menu-open");
+  const closeButton = document.getElementById("menu-close");
+  const progressBar = document.getElementById("scroll-progress");
+  const navLinks = Array.from(document.querySelectorAll("[data-nav]"));
+  const sections = ["home", "projects", "experience", "essays", "achievements", "about"]
+    .map((id) => document.getElementById(id))
+    .filter((section): section is HTMLElement => section !== null);
+  let lockedScrollY = 0;
+  let scrollLocked = false;
+  let scrollToken = 0;
+  let lastFocused: Element | null = null;
+
+  const setActive = (id: string) => {
+    navLinks.forEach((link) => {
+      const active = link.getAttribute("data-section") === id;
+      link.classList.toggle("is-active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  };
+
+  const updateScrollState = () => {
+    if (scrollLocked) return;
+    header?.classList.toggle("is-scrolled", window.scrollY > 24);
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+    if (progressBar) progressBar.style.transform = `scaleX(${ratio})`;
+  };
+
+  const unlockScroll = () => {
+    if (!scrollLocked) return;
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    window.scrollTo({ top: lockedScrollY, behavior: "instant" });
+    scrollLocked = false;
+    updateScrollState();
+  };
+
+  const closeMenu = () => {
+    if (!menu || !panel || !overlay || menu.classList.contains("hidden")) return;
+    panel.classList.add("translate-x-full");
+    overlay.classList.add("opacity-0");
+    menu.setAttribute("aria-hidden", "true");
+    openButton?.setAttribute("aria-expanded", "false");
+    unlockScroll();
+    window.setTimeout(() => menu.classList.add("hidden"), 280);
+    if (lastFocused instanceof HTMLElement) lastFocused.focus({ preventScroll: true });
+    else openButton?.focus({ preventScroll: true });
+    lastFocused = null;
+  };
+
+  const openMenu = () => {
+    if (!menu || !panel || !overlay) return;
+    scrollToken += 1;
+    lastFocused = document.activeElement;
+    lockedScrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    scrollLocked = true;
+    menu.classList.remove("hidden");
+    menu.setAttribute("aria-hidden", "false");
+    openButton?.setAttribute("aria-expanded", "true");
+    requestAnimationFrame(() => {
+      panel.classList.remove("translate-x-full");
+      overlay.classList.remove("opacity-0");
+    });
+    window.setTimeout(() => closeButton?.focus(), 320);
+  };
+
+  const scrollToTarget = (target: HTMLElement, href: string) => {
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const targetY = Math.max(0, window.scrollY + target.getBoundingClientRect().top - margin);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const token = ++scrollToken;
+    if (reduceMotion || Math.abs(targetY - window.scrollY) < 2) {
+      window.scrollTo({ top: targetY, behavior: "instant" });
+      history.replaceState(null, "", href);
+      return;
+    }
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const duration = Math.min(760, Math.max(300, Math.abs(distance) * 0.32));
+    let startTime: number | undefined;
+    const step = (time: number) => {
+      if (token !== scrollToken) return;
+      if (startTime === undefined) startTime = time;
+      const progress = Math.min((time - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      window.scrollTo({ top: Math.round(startY + distance * eased), behavior: "instant" });
+      if (progress < 1) requestAnimationFrame(step);
+      else history.replaceState(null, "", href);
+    };
+    requestAnimationFrame(step);
+  };
+
+  openButton?.addEventListener("click", openMenu);
+  closeButton?.addEventListener("click", closeMenu);
+  overlay?.addEventListener("click", closeMenu);
+
+  panel?.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   });
-</script>
 
-<style>
-  html {
-    scroll-behavior: smooth;
+  document.addEventListener("click", (event) => {
+    const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a[href^="#"]') : null;
+    if (!link) return;
+    const href = link.getAttribute("href");
+    const target = href ? document.querySelector<HTMLElement>(href) : null;
+    if (!href || !target) return;
+    event.preventDefault();
+    if (link.hasAttribute("data-menu-close")) closeMenu();
+    scrollToTarget(target, href);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !(atBottom && entry.target !== sections.at(-1))) {
+          setActive(entry.target.id);
+        }
+      });
+    },
+    { rootMargin: "-38% 0px -52% 0px", threshold: 0 },
+  );
+  sections.forEach((section) => observer.observe(section));
+
+  window.addEventListener("scroll", () => {
+    updateScrollState();
+    if (sections.some((section) => section.id === "home") && window.scrollY < 100) setActive("home");
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2 && sections.length) {
+      setActive(sections.at(-1)!.id);
+    }
+  }, { passive: true });
+  window.addEventListener("resize", updateScrollState);
+  updateScrollState();
+  const onEssayPage = location.pathname.startsWith("/essays");
+  setActive(onEssayPage ? "essays" : location.hash ? location.hash.slice(1) : "home");
+
+  if (location.hash) {
+    window.setTimeout(() => {
+      const target = document.querySelector<HTMLElement>(location.hash);
+      if (target) window.scrollTo({ top: target.offsetTop - 92, behavior: "instant" });
+    }, 80);
   }
-</style>
+</script>

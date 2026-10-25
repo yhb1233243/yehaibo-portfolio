@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from "astro:content";
+import PageFrame from "../../layouts/PageFrame.astro";
+import { estimateReadingMinutes, formatEssayDate } from "../../lib/essays";
+
+export async function getStaticPaths() {
+  const essays = await getCollection("essays", ({ data }) => !data.draft);
+  return essays.map((essay) => ({ params: { slug: essay.id }, props: { essay } }));
+}
+
+const { essay } = Astro.props;
+const { Content } = await render(essay);
+const title = `${essay.data.title} · 叶海波的随笔`;
+---
+
+<PageFrame title={title} description={essay.data.summary}>
+  <article>
+    <a href="/essays/" class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 transition-colors hover:text-cyan-300"><span aria-hidden="true">←</span> 全部随笔</a>
+    <header class="mt-10 border-b border-white/[0.09] pb-8 sm:mt-14 sm:pb-10">
+      <p class="eyebrow">Notes &amp; Reflections</p>
+      <h1 class="section-title mt-5 max-w-3xl text-[clamp(2rem,5vw,3.5rem)]">{essay.data.title}</h1>
+      <p class="mt-5 max-w-2xl text-base leading-8 text-muted">{essay.data.summary}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 font-mono text-[10px] text-white/40">
+        <time datetime={essay.data.publishedAt.toISOString()}>{formatEssayDate(essay.data.publishedAt)}</time>
+        <span>{estimateReadingMinutes(essay.body)} 分钟阅读</span>
+        <div class="flex flex-wrap gap-2">{essay.data.tags.map((tag) => <span class="chip">{tag}</span>)}</div>
+      </div>
+    </header>
+    <div class="essay-content mx-auto mt-9 max-w-[720px] sm:mt-12">
+      <Content />
+    </div>
+    <div class="mx-auto mt-12 max-w-[720px] border-t border-white/[0.09] pt-6">
+      <a href="/essays/" class="inline-flex items-center gap-2 text-sm text-white/55 transition-colors hover:text-cyan-300"><span aria-hidden="true">←</span> 回到随笔列表</a>
+    </div>
+  </article>
+</PageFrame>

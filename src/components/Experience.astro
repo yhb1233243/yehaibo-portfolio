@@ -1,73 +1,49 @@
 ---
 import { siteConfig } from "../config";
-const hasExperience = siteConfig.experience && siteConfig.experience.length > 0;
 ---
 
 {
-  hasExperience && (
-    <section id="experience" class="p-8 sm:p-12 md:p-16 lg:p-24">
-      <div>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
-          <div class="lg:col-span-4">
-            <h2 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-bold text-gray-900">
-              Experience
-            </h2>
-            <div
-              class="w-[75px] h-[5px] mt-2 rounded-full"
-              style={`background-color: ${siteConfig.accentColor}`}
-            />
-          </div>
-
-          <div class="lg:col-span-8">
-            <div class="relative">
-              {siteConfig.experience.map((exp, index) => (
-                <div class="relative mb-12 last:mb-0">
-                  {/* Timeline dot at top of card */}
-                  <div
-                    class="absolute left-1/2 -top-2 w-4 h-4 bg-white border-2 rounded-full -translate-x-1/2 z-20 transition-all duration-300"
-                    style={`border-color: ${siteConfig.accentColor}; background-color: ${siteConfig.accentColor}`}
-                  />
-
-                  {/* Connecting line below card */}
-                  {index < siteConfig.experience.length - 1 && (
-                    <div class="absolute left-1/2 bottom-0 w-0.5 h-12 bg-gray-300 -translate-x-1/2 translate-y-full z-10" />
-                  )}
-
-                  {/* Experience card */}
-                  <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-5 md:p-6 hover:shadow-md transition-shadow duration-300">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                      <div>
-                        <h3 class="text-lg sm:text-xl font-semibold text-gray-900">
-                          {exp.title}
-                        </h3>
-                        <p
-                          class="text-base sm:text-lg"
-                          style={`color: ${siteConfig.accentColor}`}
-                        >
-                          {exp.company}
-                        </p>
-                      </div>
-                      <span class="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-0">
-                        {exp.dateRange}
-                      </span>
-                    </div>
-
-                    <ul class="space-y-2">
-                      {exp.bullets.map((bullet) => (
-                        <li class="flex items-start">
-                          <span class="inline-block w-1.5 h-1.5 rounded-full bg-gray-400 mt-2 mr-3 flex-shrink-0" />
-                          <span class="text-sm sm:text-base text-gray-600">
-                            {bullet}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+  siteConfig.experience.length > 0 && (
+    <section id="experience" class="pt-28 sm:pt-36">
+      <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p class="eyebrow">02 / Experience</p>
+          <h2 class="section-title mt-5">经历</h2>
         </div>
+        <p class="max-w-sm text-sm leading-7 text-muted sm:text-right">把系统做稳，把交付做快，把每一次实践留下可复用的能力。</p>
+      </div>
+
+      <div class="mt-9 space-y-5">
+        {
+          siteConfig.experience.map((exp, index) => (
+            <article class="relative grid gap-5 md:grid-cols-[170px_minmax(0,1fr)] md:gap-8">
+              <div class="pt-2 md:text-right">
+                <p class="font-mono text-[11px] text-violet-300/75">{exp.dateRange}</p>
+                <p class="mt-2 text-xs text-white/35">0{index + 1} / 0{siteConfig.experience.length}</p>
+              </div>
+
+              <div class="glass glass-hover relative p-5 sm:p-7">
+                <span class="absolute -left-[9px] top-8 hidden h-4 w-4 rounded-full border-4 border-[#080a14] bg-gradient-to-br from-violet-400 to-cyan-300 shadow-[0_0_18px_#8b5cf6] md:block"></span>
+                <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                  <div>
+                    <h3 class="font-display text-xl font-semibold tracking-tight text-white">{exp.title}</h3>
+                    <p class="mt-1.5 text-sm text-cyan-300/80">{exp.company}</p>
+                  </div>
+                  <span class="w-fit rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[10px] text-white/45">工程实践</span>
+                </div>
+
+                <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+                  {exp.bullets.map((bullet) => (
+                    <li class="flex gap-3 text-sm leading-7 text-muted">
+                      <span class="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-violet-400 to-cyan-300 shadow-[0_0_10px_#8b5cf6]"></span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
       </div>
     </section>
   )
