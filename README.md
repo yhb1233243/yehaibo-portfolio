@@ -1,5 +1,7 @@
 # 叶海波 · 个人作品集
 
+![个人主页预览](public/images/portfolio-preview.png)
+
 个人作品集网站，集中展示我的工程实践、代表项目、技术能力、随笔与可核验成果。
 
 **在线访问：** [yhb.mybugssss.lol](https://yhb.mybugssss.lol)  ·  **GitHub：** [yhb1233243](https://github.com/yhb1233243)
